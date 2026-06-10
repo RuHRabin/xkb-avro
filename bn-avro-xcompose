@@ -1,0 +1,135 @@
+# ================================================================
+# ~/.XCompose  —  Bengali Avro Phonetic Digraph Sequences
+# ================================================================
+# Companion file to the bn_avro XKB layout.
+#
+# HOW TO USE:
+#   1. Set a Compose key in KDE Plasma:
+#      System Settings → Keyboard → Advanced → "Position of Compose key"
+#      Recommended: "Menu" key  (right of right-spacebar on most keyboards)
+#      Alternative: "Caps Lock"  (frees Caps Lock from its useless function)
+#      WARNING: Do NOT choose "Right Alt" — it's already used as AltGr (L3).
+#
+#   2. Place (or merge) this file at:  ~/.XCompose
+#
+#   3. Log out and log back in for changes to take effect.
+#
+# HOW COMPOSE SEQUENCES WORK:
+#   Press [Compose key], release, then type the letters in sequence.
+#   Example to type খ (kha):
+#     → Press Menu key, release
+#     → Press k
+#     → Press h
+#     → খ appears in your text
+#
+# NOTE: XCompose outputs the result after the full sequence is typed.
+#       Applications must support XIM or IBus for this to work.
+#       Qt (KDE) and GTK apps support it natively.
+# ================================================================
+
+# Include the system locale's default Compose table first
+include "%L"
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 1: ASPIRATED CONSONANTS (h-digraphs)
+#  These are the most common sequences in Avro Phonetic.
+# ──────────────────────────────────────────────────────────────────
+
+<Multi_key> <k> <h>        : "খ"    U0996    # kh → খ  kha
+<Multi_key> <g> <h>        : "ঘ"    U0998    # gh → ঘ  gha
+<Multi_key> <c> <h>        : "চ"    U099A    # ch → চ  cha  (Avro: c alone = চ too)
+<Multi_key> <C> <h>        : "ছ"    U099B    # Ch → ছ  chha
+<Multi_key> <j> <h>        : "ঝ"    U099D    # jh → ঝ  jha
+<Multi_key> <t> <h>        : "থ"    U09A5    # th → থ  tha  (dental)
+<Multi_key> <T> <h>        : "ঠ"    U09A0    # Th → ঠ  ttha (retroflex)
+<Multi_key> <d> <h>        : "ধ"    U09A7    # dh → ধ  dha  (dental)
+<Multi_key> <D> <h>        : "ঢ"    U09A2    # Dh → ঢ  ddha (retroflex)
+<Multi_key> <p> <h>        : "ফ"    U09AB    # ph → ফ  pha
+<Multi_key> <b> <h>        : "ভ"    U09AD    # bh → ভ  bha
+<Multi_key> <s> <h>        : "শ"    U09B6    # sh → শ  sha
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 2: NASAL AND SPECIAL CONSONANTS
+# ──────────────────────────────────────────────────────────────────
+
+<Multi_key> <n> <g>        : "ঙ"    U0999    # ng → ঙ  nga
+<Multi_key> <n> <j>        : "ঞ"    U099E    # nj → ঞ  nya
+<Multi_key> <n> <y>        : "ঞ"    U099E    # ny → ঞ  nya (alternate)
+<Multi_key> <r> <r>        : "ড়"           # rr → ড়  rra (retroflex flap)
+<Multi_key> <N> <g>        : "ঙ"    U0999    # Ng → ঙ  nga (alternate)
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 3: VOWEL SEQUENCES (long / diphthong vowels)
+# ──────────────────────────────────────────────────────────────────
+
+<Multi_key> <a> <a>        : "আ"    U0986    # aa → আ  AA vowel
+<Multi_key> <i> <i>        : "ঈ"    U0988    # ii → ঈ  II vowel
+<Multi_key> <e> <e>        : "ঈ"    U0988    # ee → ঈ  II vowel (alternate)
+<Multi_key> <u> <u>        : "ঊ"    U098A    # uu → ঊ  UU vowel
+<Multi_key> <o> <i>        : "ঐ"    U0990    # oi → ঐ  AI vowel
+<Multi_key> <o> <u>        : "ঔ"    U0994    # ou → ঔ  AU vowel
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 4: COMMON CONSONANT CLUSTERS (conjuncts)
+#  These output 3 codepoints: consonant + ্ (hasanta) + consonant
+#  The font renders them as a single conjunct glyph automatically.
+# ──────────────────────────────────────────────────────────────────
+
+# k-clusters
+<Multi_key> <k> <t>        : "ক্ত"           # kt  → ক্ত  kta
+<Multi_key> <k> <s>        : "ক্স"           # ks  → ক্স  ksa  (English 'x' sound)
+<Multi_key> <k> <S>        : "ক্ষ"           # kS  → ক্ষ  ksha
+<Multi_key> <k> <n>        : "ক্ন"           # kn  → ক্ন  kna
+<Multi_key> <k> <r>        : "ক্র"           # kr  → ক্র  kra
+
+# g-clusters
+<Multi_key> <g> <n>        : "গ্ন"           # gn  → গ্ন  gna
+<Multi_key> <g> <r>        : "গ্র"           # gr  → গ্র  gra
+
+# t-clusters (dental)
+<Multi_key> <t> <t>        : "ত্ত"           # tt  → ত্ত  tta
+<Multi_key> <t> <r>        : "ত্র"           # tr  → ত্র  tra
+<Multi_key> <t> <n>        : "ত্ন"           # tn  → ত্ন  tna
+
+# n-clusters
+<Multi_key> <n> <t>        : "ন্ত"           # nt  → ন্ত  nta
+<Multi_key> <n> <d>        : "ন্দ"           # nd  → ন্দ  nda
+
+# p-clusters
+<Multi_key> <p> <r>        : "প্র"           # pr  → প্র  pra
+<Multi_key> <p> <t>        : "প্ত"           # pt  → প্ত  pta
+<Multi_key> <p> <n>        : "প্ন"           # pn  → প্ন  pna
+
+# s-clusters
+<Multi_key> <s> <t>        : "স্ত"           # st  → স্ত  sta
+<Multi_key> <s> <k>        : "স্ক"           # sk  → স্ক  ska
+<Multi_key> <s> <p>        : "স্প"           # sp  → স্প  spa
+<Multi_key> <s> <r>        : "স্র"           # sr  → স্র  sra
+<Multi_key> <s> <n>        : "স্ন"           # sn  → স্ন  sna
+
+# b-clusters
+<Multi_key> <b> <r>        : "ব্র"           # br  → ব্র  bra
+<Multi_key> <b> <d>        : "ব্দ"           # bd  → ব্দ  bda
+
+# m-clusters
+<Multi_key> <m> <b>        : "ম্ব"           # mb  → ম্ব  mba
+<Multi_key> <m> <p>        : "ম্প"           # mp  → ম্প  mpa
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 5: PUNCTUATION SHORTCUTS
+# ──────────────────────────────────────────────────────────────────
+
+<Multi_key> <period> <period>   : "।"         # .. → ।  Bengali daari (full stop)
+<Multi_key> <bar>    <bar>      : "॥"         # || → ॥  Double daari
+
+# ──────────────────────────────────────────────────────────────────
+#  SECTION 6: SPECIAL DIACRITICS
+# ──────────────────────────────────────────────────────────────────
+
+<Multi_key> <asciitilde> <n>    : "ঁ"  U0981  # ~n → ঁ  chandrabindu
+<Multi_key> <asciitilde> <m>    : "ং"  U0982  # ~m → ং  anusvara
+<Multi_key> <colon>      <h>    : "ঃ"  U0983  # :h → ঃ  visarga
+
+# ================================================================
+# END OF ~/.XCompose
+# ================================================================

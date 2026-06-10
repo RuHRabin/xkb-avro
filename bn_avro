@@ -1,0 +1,358 @@
+// ================================================================
+// Bengali (Avro Phonetic) — Native XKB Keyboard Layout
+// ================================================================
+// File:    bn_avro
+// Place:   /usr/share/X11/xkb/symbols/bn_avro
+// Tested:  Debian 12 (Bookworm) + KDE Plasma 6
+// Based on: Avro Phonetic by OmicronLab (omicronlab.com)
+// ================================================================
+//
+//  ┌──────────────────────────────────────────────────────────┐
+//  │  DESIGN PHILOSOPHY                                        │
+//  │  XKB is a STATIC keymap. It maps one keystroke → one     │
+//  │  Unicode character. Avro Phonetic's sequential digraphs  │
+//  │  ('k'+'h'→খ) cannot be replicated without a daemon.      │
+//  │  This layout covers ALL Bengali characters using 4        │
+//  │  levels per key. See companion .XCompose file for         │
+//  │  optional Compose-key digraph sequences.                  │
+//  └──────────────────────────────────────────────────────────┘
+//
+//  KEY LEVELS (Right Alt = AltGr activates L3 and L4):
+//    L1  Normal key                  k  → ক
+//    L2  Shift+key                   K  → খ
+//    L3  AltGr+key         AltGr+i   → ি  (i-mātrā)
+//    L4  Shift+AltGr       AltGr+I   → ী  (ii-mātrā)
+//
+//  PHONETIC LOGIC (mirrors Avro Phonetic scheme):
+//    Unshifted  = unaspirated consonant  /  short vowel
+//    Shifted    = aspirated consonant    /  long vowel
+//    AltGr      = dependent vowel sign (mātrā) or alternate
+//    Shift+AltGr= rare or supplementary characters
+//
+//  ┌─ CRITICAL KEYS QUICK REFERENCE ─────────────────────────┐
+//  │  \  (Backslash)      →  ্   Hasanta/Virama              │
+//  │  AltGr+Space         →  ZWNJ (U+200C) prevent conjunct  │
+//  │  Shift+AltGr+Space   →  ZWJ  (U+200D) force conjunct    │
+//  │  AltGr+[             →  ৎ   Khanda Ta                   │
+//  │  Shift+AltGr+[       →  ্   Hasanta (alternate)         │
+//  │  AltGr+]             →  ।   Bengali Daari (full stop)   │
+//  │  Shift+AltGr+]       →  ॥   Double Daari                │
+//  │  AltGr+=             →  ৳   Bengali Taka sign           │
+//  │  AltGr+0 … 9         →  ০–৯ Bengali digits              │
+//  │  AltGr+`             →  ়   Nukta diacritic             │
+//  │  Shift+AltGr+`       →  ঁ   Chandrabindu               │
+//  └──────────────────────────────────────────────────────────┘
+//
+//  CONJUNCT CONSONANT GUIDE:
+//    Type:   consonant → \ → consonant
+//    কত  not a conjunct  (two separate consonants)
+//    ক\ত  produces →   ক্ত  (kta — conjunct with invisible hasanta)
+//    ক\AltGr+Space  →  ক্‌  (ক with VISIBLE hasanta sign = ZWNJ trick)
+//
+//  FULL CHARACTER COVERAGE:
+//    All 50+ Bengali consonants and vowels, all vowel matras,
+//    all diacritics (chandrabindu ঁ, anusvara ং, visarga ঃ),
+//    nukta ়, hasanta ্, Khanda Ta ৎ, ya-phala র্, and
+//    Bengali digits ০–৯ and Taka sign ৳.
+// ================================================================
+
+default partial alphanumeric_keys modifier_keys
+xkb_symbols "basic" {
+
+    name[Group1] = "Bengali (Avro Phonetic)";
+
+    // ── Activate Right Alt (AltGr) as the ISO Level 3 Shift ─────
+    //    This makes AltGr act as the Level 3 / Level 4 selector.
+    //    Left Alt is unaffected and keeps its normal Meta function.
+    include "level3(ralt_switch)"
+
+// ══════════════════════════════════════════════════════════════════
+//  ① NUMBER ROW
+//     L1 / L2  : Standard ASCII digits and symbols (unchanged)
+//     L3        : Bengali-script digits ০ ১ ২ … ৯
+//     L4        : Extra symbols
+// ══════════════════════════════════════════════════════════════════
+
+    key <TLDE> { [ grave,          asciitilde,   U09BC,       U0981      ] };
+    //             `                ~              ়  (nukta)    ঁ  (chandrabindu)
+
+    key <AE01> { [ 1,              exclam,       U09E7,       exclam     ] };
+    //             1                !              ১
+
+    key <AE02> { [ 2,              at,           U09E8,       at         ] };
+    //             2                @              ২
+
+    key <AE03> { [ 3,              numbersign,   U09E9,       numbersign ] };
+    //             3                #              ৩
+
+    key <AE04> { [ 4,              dollar,       U09EA,       dollar     ] };
+    //             4                $              ৪
+
+    key <AE05> { [ 5,              percent,      U09EB,       percent    ] };
+    //             5                %              ৫
+
+    key <AE06> { [ 6,              asciicircum,  U09EC,       asciicircum] };
+    //             6                ^              ৬
+
+    key <AE07> { [ 7,              ampersand,    U09ED,       ampersand  ] };
+    //             7                &              ৭
+
+    key <AE08> { [ 8,              asterisk,     U09EE,       asterisk   ] };
+    //             8                *              ৮
+
+    key <AE09> { [ 9,              parenleft,    U09EF,       parenleft  ] };
+    //             9                (              ৯
+
+    key <AE10> { [ 0,              parenright,   U09E6,       parenright ] };
+    //             0                )              ০
+
+    key <AE11> { [ minus,          underscore,   endash,      emdash     ] };
+    //             -                _              –  (en-dash)  —  (em-dash)
+
+    key <AE12> { [ equal,          plus,         U09F3,       U09F2      ] };
+    //             =                +              ৳  (Taka)     ৲  (old rupee mark)
+
+// ══════════════════════════════════════════════════════════════════
+//  ② TOP ROW    Q  W  E  R  T  Y  U  I  O  P  [  ]
+// ══════════════════════════════════════════════════════════════════
+
+    // Q ── ক / খ
+    //      Both Q and K map to ক/খ following Avro convention.
+    key <AD01> { type[Group1]="FOUR_LEVEL",
+                 [ U0995,          U0996,        U0995,       U0996      ] };
+    //             ক  (ka)           খ  (kha)       ক             খ
+
+    // W ── ও / ঔ   +   vowel signs on AltGr
+    //      Avro: w and o both produce ও; W/O produce ঔ.
+    key <AD02> { type[Group1]="FOUR_LEVEL",
+                 [ U0993,          U0994,        U09CB,       U09CC      ] };
+    //             ও  (o)            ঔ  (ou)        ো  (o-mātrā)  ৌ  (ou-mātrā)
+
+    // E ── এ / ঐ   +   vowel signs on AltGr
+    key <AD03> { type[Group1]="FOUR_LEVEL",
+                 [ U098F,          U0990,        U09C7,       U09C8      ] };
+    //             এ  (e)            ঐ  (oi)        ে  (e-mātrā)  ৈ  (oi-mātrā)
+
+    // R ── র / ড়   +   vocalic-R mātrā and ঢ় on AltGr
+    key <AD04> { type[Group1]="FOUR_LEVEL",
+                 [ U09B0,          U09DC,        U09C3,       U09DD      ] };
+    //             র  (ra)           ড়  (rra)       ৃ  (ri-mātrā) ঢ়  (rha)
+
+    // T ── ত / ট   +   aspirated dental/retroflex on AltGr
+    //      L1: dental-ta ত  |  L2: retroflex-tta ট
+    //      L3: dental-tha থ  |  L4: retroflex-ttha ঠ
+    key <AD05> { type[Group1]="FOUR_LEVEL",
+                 [ U09A4,          U099F,        U09A5,       U09A0      ] };
+    //             ত  (ta)           ট  (tta)       থ  (tha)      ঠ  (ttha)
+
+    // Y ── য় / য
+    //      L1: ya-phala যotaধারী য় (yya)  |  L2: base letter য (ya)
+    key <AD06> { type[Group1]="FOUR_LEVEL",
+                 [ U09DF,          U09AF,        U09DF,       U09AF      ] };
+    //             য়  (yya)          য  (ya)        য়             য
+
+    // U ── উ / ঊ   +   vowel signs on AltGr
+    key <AD07> { type[Group1]="FOUR_LEVEL",
+                 [ U0989,          U098A,        U09C1,       U09C2      ] };
+    //             উ  (u)            ঊ  (uu)        ু  (u-mātrā)  ূ  (uu-mātrā)
+
+    // I ── ই / ঈ   +   vowel signs on AltGr
+    key <AD08> { type[Group1]="FOUR_LEVEL",
+                 [ U0987,          U0988,        U09BF,       U09C0      ] };
+    //             ই  (i)            ঈ  (ii)        ি  (i-mātrā)  ী  (ii-mātrā)
+
+    // O ── ও / ঔ   +   vowel signs on AltGr  (same as W, per Avro)
+    key <AD09> { type[Group1]="FOUR_LEVEL",
+                 [ U0993,          U0994,        U09CB,       U09CC      ] };
+    //             ও  (o)            ঔ  (ou)        ো  (o-mātrā)  ৌ  (ou-mātrā)
+
+    // P ── প / ফ
+    key <AD10> { type[Group1]="FOUR_LEVEL",
+                 [ U09AA,          U09AB,        U09AA,       U09AB      ] };
+    //             প  (pa)           ফ  (pha)       প             ফ
+
+    // [ ── ASCII brackets  |  AltGr: ৎ Khanda-Ta  /  ্ Hasanta
+    key <AD11> { type[Group1]="FOUR_LEVEL",
+                 [ bracketleft,    braceleft,    U09CE,       U09CD      ] };
+    //             [                {             ৎ  (khanda-ta) ্  (hasanta)
+
+    // ] ── ASCII brackets  |  AltGr: ।  Daari  /  ॥  Double Daari
+    key <AD12> { type[Group1]="FOUR_LEVEL",
+                 [ bracketright,   braceright,   U0964,       U0965      ] };
+    //             ]                }             ।  (daari)    ॥  (double daari)
+
+// ══════════════════════════════════════════════════════════════════
+//  ③ HOME ROW    A  S  D  F  G  H  J  K  L  ;  '
+// ══════════════════════════════════════════════════════════════════
+
+    // A ── অ / আ   +   aa-mātrā on AltGr  +  vocalic-R vowel on L4
+    key <AC01> { type[Group1]="FOUR_LEVEL",
+                 [ U0985,          U0986,        U09BE,       U098B      ] };
+    //             অ  (a)            আ  (aa)        া  (aa-mātrā) ঋ  (vocalic-R)
+
+    // S ── স / শ   +   ষ on AltGr
+    //      L1: sa স  |  L2: sha শ  |  L3: ssa ষ
+    key <AC02> { type[Group1]="FOUR_LEVEL",
+                 [ U09B8,          U09B6,        U09B7,       U09B8      ] };
+    //             স  (sa)           শ  (sha)       ষ  (ssa)      স
+
+    // D ── দ / ড   +   aspirated dental/retroflex on AltGr
+    //      L1: dental-da দ  |  L2: retroflex-dda ড
+    //      L3: dental-dha ধ  |  L4: retroflex-ddha ঢ
+    key <AC03> { type[Group1]="FOUR_LEVEL",
+                 [ U09A6,          U09A1,        U09A7,       U09A2      ] };
+    //             দ  (da)           ড  (dda)       ধ  (dha)      ঢ  (ddha)
+
+    // F ── ফ  (pha / f — aspirated labial, same on all levels)
+    key <AC04> { type[Group1]="FOUR_LEVEL",
+                 [ U09AB,          U09AB,        U09AB,       U09AB      ] };
+    //             ফ  (pha)          ফ             ফ             ফ
+
+    // G ── গ / ঘ   +   nasal consonants on AltGr
+    //      L1: ga গ  |  L2: gha ঘ  |  L3: nga ঙ  |  L4: nya ঞ
+    key <AC05> { type[Group1]="FOUR_LEVEL",
+                 [ U0997,          U0998,        U0999,       U099E      ] };
+    //             গ  (ga)           ঘ  (gha)       ঙ  (nga)      ঞ  (nya)
+
+    // H ── হ / ঃ   +   diacritics on AltGr
+    //      L1: ha হ  |  L2: visarga ঃ
+    //      L3: chandrabindu ঁ  |  L4: anusvara ং
+    key <AC06> { type[Group1]="FOUR_LEVEL",
+                 [ U09B9,          U0983,        U0981,       U0982      ] };
+    //             হ  (ha)           ঃ  (visarga)   ঁ (chandrab.)  ং (anusvara)
+
+    // J ── জ / ঝ   +   nya on AltGr
+    key <AC07> { type[Group1]="FOUR_LEVEL",
+                 [ U099C,          U099D,        U099E,       U099C      ] };
+    //             জ  (ja)           ঝ  (jha)       ঞ  (nya)      জ
+
+    // K ── ক / খ  (same as Q — two natural locations for k-sound)
+    key <AC08> { type[Group1]="FOUR_LEVEL",
+                 [ U0995,          U0996,        U0995,       U0996      ] };
+    //             ক  (ka)           খ  (kha)       ক             খ
+
+    // L ── ল  (la — no aspirated form in Bengali)
+    key <AC09> { type[Group1]="FOUR_LEVEL",
+                 [ U09B2,          U09B2,        U09B2,       U09B2      ] };
+    //             ল  (la)           ল             ল             ল
+
+    // ;  ── kept as ASCII
+    key <AC10> { [ semicolon,      colon,        semicolon,   colon      ] };
+
+    // '  ── ASCII apostrophe  |  AltGr: curly single quotes
+    key <AC11> { [ apostrophe,     quotedbl,     U2018,       U2019      ] };
+    //             '                "             ' (open)      ' (close)
+
+// ══════════════════════════════════════════════════════════════════
+//  ④ BOTTOM ROW    Z  X  C  V  B  N  M  ,  .  /
+// ══════════════════════════════════════════════════════════════════
+
+    // Z ── জ / য   (Avro: z=জ, Z=য)
+    key <AB01> { type[Group1]="FOUR_LEVEL",
+                 [ U099C,          U09AF,        U099C,       U09AF      ] };
+    //             জ  (ja / z)       য  (ya / Z)    জ             য
+
+    // X ── ক / ষ
+    //      English 'x' has no single Bengali equivalent.
+    //      ক্স (ksa) and ক্ষ (ksha) need Compose sequences.
+    //      L3: hasanta ্  |  L4: ssa ষ — useful building blocks
+    key <AB02> { type[Group1]="FOUR_LEVEL",
+                 [ U0995,          U09B7,        U09CD,       U09B8      ] };
+    //             ক  (ka)           ষ  (ssa)       ্  (hasanta)  স  (sa)
+
+    // C ── চ / ছ   (ca / cha)
+    key <AB03> { type[Group1]="FOUR_LEVEL",
+                 [ U099A,          U099B,        U099A,       U099B      ] };
+    //             চ  (ca)           ছ  (cha)       চ             ছ
+
+    // V ── ভ  (bha / v)   AltGr: ব (ba) for easy access
+    key <AB04> { type[Group1]="FOUR_LEVEL",
+                 [ U09AD,          U09AD,        U09AC,       U09AD      ] };
+    //             ভ  (bha / v)      ভ              ব  (ba)       ভ
+
+    // B ── ব / ভ   (ba / bha)
+    key <AB05> { type[Group1]="FOUR_LEVEL",
+                 [ U09AC,          U09AD,        U09AC,       U09AD      ] };
+    //             ব  (ba)           ভ  (bha)       ব             ভ
+
+    // N ── ন / ণ   +   nasal consonants on AltGr
+    //      L1: dental-na ন  |  L2: retroflex-nna ণ
+    //      L3: nga ঙ           |  L4: nya ঞ
+    key <AB06> { type[Group1]="FOUR_LEVEL",
+                 [ U09A8,          U09A3,        U0999,       U099E      ] };
+    //             ন  (na)           ণ  (nna)       ঙ  (nga)      ঞ  (nya)
+
+    // M ── ম  (ma)
+    key <AB07> { type[Group1]="FOUR_LEVEL",
+                 [ U09AE,          U09AE,        U09AE,       U09AE      ] };
+    //             ম  (ma)           ম             ম             ম
+
+    // ,  ──  comma / less  |  AltGr: ।  (Bengali daari)
+    key <AB08> { [ comma,          less,         U0964,       U0964      ] };
+    //             ,                <             ।  (daari)
+
+    // .  ──  period / greater  |  AltGr: ॥  (double daari)
+    key <AB09> { [ period,         greater,      U0965,       U0965      ] };
+    //             .                >             ॥  (double daari)
+
+    // /  ──  slash / question  |  AltGr: ্  (hasanta, alternate)
+    key <AB10> { [ slash,          question,     U09CD,       U09B7      ] };
+    //             /                ?             ্  (hasanta)   ষ  (ssa)
+
+// ══════════════════════════════════════════════════════════════════
+//  ⑤ SPECIAL AND PUNCTUATION KEYS
+// ══════════════════════════════════════════════════════════════════
+
+    // ── BACKSLASH = PRIMARY HASANTA (VIRAMA) KEY ─────────────────
+    //
+    //  Hasanta (্  U+09CD) is the VIRAMA character. It is the most
+    //  important special key for Bengali typing. It joins consonants
+    //  to form conjuncts (যুক্তব্যঞ্জন / ligatures):
+    //
+    //    ক  +  \  +  ত   →   ক্ত   (kta)
+    //    প  +  \  +  র   →   প্র   (pra)
+    //    ন  +  \  +  ত   →   ন্ত   (nta)
+    //    স  +  \  +  ক   →   স্ক   (ska)
+    //    ম  +  \  +  ব   →   ম্ব   (mba)
+    //
+    //  The hasanta sign becomes INVISIBLE when a conjunct forms.
+    //  To force it VISIBLE (e.g. in ক্‌ without joining),
+    //  type: consonant + \ + AltGr+Space (the ZWNJ character).
+    //
+    //  Shift+\  →  ় nukta (creates ড়, ঢ়, য় from ড, ঢ, য)
+    // ──────────────────────────────────────────────────────────────
+    key <BKSL> { type[Group1]="FOUR_LEVEL",
+                 [ U09CD,          U09BC,        U0964,       U0965      ] };
+    //             ্  (hasanta)      ়  (nukta)     ।  (daari)    ॥  (double daari)
+
+    // ── SPACEBAR ─────────────────────────────────────────────────
+    //
+    //  AltGr+Space  →  ZWNJ (Zero Width Non-Joiner, U+200C)
+    //    Prevents conjunct formation. Makes hasanta VISIBLE.
+    //    Usage: ক্‌ত  (ক + hasanta + ZWNJ + ত) = no conjunct formed
+    //
+    //  Shift+AltGr+Space  →  ZWJ (Zero Width Joiner, U+200D)
+    //    Forces conjunct / ligature in certain rendering contexts.
+    // ──────────────────────────────────────────────────────────────
+    key <SPCE> { [ space,          space,        U200C,       U200D      ] };
+    //             space            space         ZWNJ          ZWJ
+
+};
+// ================================================================
+// END OF FILE — /usr/share/X11/xkb/symbols/bn_avro
+// ================================================================
+//
+//  COMPLETE BENGALI CHARACTER COVERAGE OF THIS LAYOUT:
+//  ┌───────────────────────────────────────────────────────────┐
+//  │ Independent Vowels:  অ আ ই ঈ উ ঊ ঋ এ ঐ ও ঔ             │
+//  │ Vowel Signs (mātrā): া ি ী ু ূ ৃ ে ৈ ো ৌ               │
+//  │ Consonants:          ক খ গ ঘ ঙ চ ছ জ ঝ ঞ               │
+//  │                      ট ঠ ড ঢ ণ ত থ দ ধ ন               │
+//  │                      প ফ ব ভ ম য র ল শ ষ স হ           │
+//  │ With Nukta:          ড় ঢ় য়                              │
+//  │ Special:             ৎ ্ ঁ ং ঃ ়                        │
+//  │ Punctuation:         । ॥                                  │
+//  │ Digits:              ০ ১ ২ ৩ ৪ ৫ ৬ ৭ ৮ ৯                │
+//  │ Currency:            ৳                                    │
+//  │ Joiners:             ZWNJ ZWJ                             │
+//  └───────────────────────────────────────────────────────────┘
