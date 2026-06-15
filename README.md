@@ -65,7 +65,7 @@ This XKB layout has **no middleman**. It is defined at the kernel input layer â€
 ```bash
 # Clone the repository
 git clone https://github.com/RuHRabin/xkb-avro.git
-cd bn-avro-xkb
+cd avro-xkb
 
 # Run the installer with sudo
 chmod +x install-bn-avro.sh
