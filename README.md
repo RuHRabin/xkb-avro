@@ -14,7 +14,8 @@
 - ✅ **Phonetically intuitive** — `k` → ক, `K` → খ, `t` → ত, `T` → ট, `a` → অ, `A` → আ
 - ✅ **Conjunct typing** — Use `\` (Backslash) as Hasanta: `k` + `\` + `t` → ক্ত
 - ✅ **Bengali digits** — AltGr + `0`–`9` → ০–৯
-- ✅ **KDE Plasma native** — Appears in System Settings like any standard layout
+- ✅ **KDE Plasma native** — Appears in System Settings on both X11 and Wayland
+- ✅ **Wayland compatible** — Works on KDE Plasma Wayland via `kwriteconfig` and D-Bus
 - ✅ **Bilingual switching** — Switch between Bengali and English instantly with a shortcut
 - ✅ **Optional XCompose** — Companion `.XCompose` file for Avro-style digraph sequences
 
@@ -38,7 +39,7 @@ This XKB layout has **no middleman**. It is defined at the kernel input layer �
 | Requirement | Details |
 |---|---|
 | OS | Debian, Ubuntu, or any Debian-based distro |
-| Display Server | X11 (Xorg) — **not Wayland** |
+| Display Server | X11 (Xorg) **and** Wayland (KDE Plasma 5.27+ / 6) |
 | Desktop | KDE Plasma 5 or 6 (also works on GNOME/XFCE) |
 | Font | `fonts-noto-core` (for correct Bengali rendering) |
 | Privileges | `sudo` access (for installation only) |
@@ -152,6 +153,121 @@ setxkbmap -layout us
 From now on, press `Super + Space` to switch between English and Bengali at any time. The taskbar shows `us` or `bn` to indicate the active layout.
 
 ---
+
+## 🌊 Wayland Support (KDE Plasma)
+
+> Wayland replaces `setxkbmap` with compositor-level configuration.
+> The **layout file and registration are identical** to X11 — only the activation method differs.
+
+### Detect Your Session Type
+
+```bash
+echo $XDG_SESSION_TYPE
+# Output: wayland  →  use the steps below
+# Output: x11      →  use setxkbmap as described earlier
+```
+
+### Step 1 — Install the Layout (Same as X11)
+
+The symbols file and `evdev.xml` registration are **identical** for both X11 and Wayland.
+Run the same installer:
+
+```bash
+sudo bash install-bn-avro.sh
+```
+
+### Step 2 — Clear the XKB Cache
+
+Wayland compositors cache the XKB database. After installing, clear it:
+
+```bash
+rm -rf ~/.cache/xkb/
+```
+
+### Step 3 — Apply via KDE System Settings (GUI)
+
+This works on both X11 and Wayland and is the recommended method:
+
+1. Open **System Settings → Keyboard → Layouts**
+2. Check **"Configure layouts"**
+3. Click **Add** → select **Bengali (Avro Phonetic)**
+4. Set shortcut: **Super + Space**
+5. Click **Apply**
+6. **Log out and log back in**
+
+### Step 4 — Apply via Command Line (Wayland, no GUI)
+
+If you prefer the terminal or need to script it:
+
+**KDE Plasma 6:**
+```bash
+# Add both English and Bengali layouts
+kwriteconfig6 --file kxkbrc --group Layout --key Use true
+kwriteconfig6 --file kxkbrc --group Layout --key LayoutList "us,bn_avro"
+kwriteconfig6 --file kxkbrc --group Layout --key VariantList ","
+kwriteconfig6 --file kxkbrc --group Layout --key DisplayNames ","
+kwriteconfig6 --file kxkbrc --group Layout --key SwitchMode "Global"
+kwriteconfig6 --file kxkbrc --group Layout --key Options "grp:super_space_toggle"
+
+# Reload KDE keyboard settings without logout
+dbus-send --session --dest=org.kde.keyboard /Layouts     org.kde.KeyboardLayouts.reloadConfig
+```
+
+**KDE Plasma 5:**
+```bash
+kwriteconfig5 --file kxkbrc --group Layout --key Use true
+kwriteconfig5 --file kxkbrc --group Layout --key LayoutList "us,bn_avro"
+kwriteconfig5 --file kxkbrc --group Layout --key VariantList ","
+kwriteconfig5 --file kxkbrc --group Layout --key DisplayNames ","
+kwriteconfig5 --file kxkbrc --group Layout --key SwitchMode "Global"
+kwriteconfig5 --file kxkbrc --group Layout --key Options "grp:super_space_toggle"
+
+# Reload
+qdbus org.kde.keyboard /Layouts reloadConfig
+```
+
+> **`grp:super_space_toggle`** means `Super + Space` switches between layouts.
+> Change to `grp:alt_shift_toggle` or `grp:ctrl_shift_toggle` if preferred.
+
+### Step 5 — Verify on Wayland
+
+```bash
+# Check active layout (Wayland-safe method)
+cat ~/.config/kxkbrc | grep -E "LayoutList|Use="
+
+# Expected output:
+# LayoutList=us,bn_avro
+# Use=true
+```
+
+> **Note:** `setxkbmap -query` does NOT work on a pure Wayland session.
+> Use `cat ~/.config/kxkbrc` to verify instead.
+
+### GNOME Wayland (Bonus)
+
+If you use GNOME on Wayland instead of KDE:
+
+```bash
+# Add layouts (GNOME uses gsettings)
+gsettings set org.gnome.desktop.input-sources     sources "[('xkb', 'us'), ('xkb', 'bn_avro')]"
+
+# Set shortcut to Super+Space
+gsettings set org.gnome.desktop.wm.keybindings     switch-input-source "['<Super>space']"
+```
+
+### X11 vs Wayland — Difference Summary
+
+| Action | X11 | Wayland (KDE) |
+|---|---|---|
+| Install layout file | `sudo cp bn_avro ...` | Same |
+| Register in evdev.xml | `sudo nano evdev.xml` | Same |
+| Test immediately | `setxkbmap -layout bn_avro` | Not available |
+| Permanent setup | KDE Settings GUI | KDE Settings GUI (same) |
+| Command-line setup | `setxkbmap` | `kwriteconfig6` + D-Bus |
+| Verify active layout | `setxkbmap -query` | `cat ~/.config/kxkbrc` |
+| After install | No reboot needed | Log out required |
+| Cache to clear | Not needed | `rm -rf ~/.cache/xkb/` |
+
 
 ## ⌨️ Complete Key Map
 
@@ -341,8 +457,8 @@ xmodmap -pm | grep Mod5
 # Should show ISO_Level3_Shift. If empty, reapply: setxkbmap -layout bn_avro
 ```
 
-**Only works on X11, not Wayland:**
-This is an XKB layout and is designed for X11 (Xorg). On Wayland, keyboard layout handling differs. Use the `XMODIFIERS` and `GTK_IM_MODULE` environment variables, or switch to an Xorg session.
+**Wayland session type check:**
+On a Wayland session, `setxkbmap` does not work. Use `kwriteconfig6` (KDE Plasma 6) or `kwriteconfig5` (KDE Plasma 5) instead. See the [Wayland Support](#-wayland-support-kde-plasma) section above.
 
 ---
 
